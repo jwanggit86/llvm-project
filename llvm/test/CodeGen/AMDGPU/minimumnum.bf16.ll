@@ -12439,6 +12439,12 @@ define bfloat @v_minimumnum_bf16_no_ieee(bfloat %x, bfloat %y) #0 {
 ; GFX7-LABEL: v_minimumnum_bf16_no_ieee:
 ; GFX7:       ; %bb.0:
 ; GFX7-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
+; GFX7-NEXT:    v_or_b32_e32 v2, 0x400000, v0
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v0
+; GFX7-NEXT:    v_cndmask_b32_e32 v0, v0, v2, vcc
+; GFX7-NEXT:    v_or_b32_e32 v2, 0x400000, v1
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v1
+; GFX7-NEXT:    v_cndmask_b32_e32 v1, v1, v2, vcc
 ; GFX7-NEXT:    v_mul_f32_e32 v0, 1.0, v0
 ; GFX7-NEXT:    v_mul_f32_e32 v1, 1.0, v1
 ; GFX7-NEXT:    v_and_b32_e32 v1, 0xffff0000, v1
@@ -12650,6 +12656,18 @@ define <2 x bfloat> @v_minimumnum_v2bf16_no_ieee(<2 x bfloat> %x, <2 x bfloat> %
 ; GFX7-LABEL: v_minimumnum_v2bf16_no_ieee:
 ; GFX7:       ; %bb.0:
 ; GFX7-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
+; GFX7-NEXT:    v_or_b32_e32 v4, 0x400000, v0
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v0
+; GFX7-NEXT:    v_cndmask_b32_e32 v0, v0, v4, vcc
+; GFX7-NEXT:    v_or_b32_e32 v4, 0x400000, v2
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v2
+; GFX7-NEXT:    v_cndmask_b32_e32 v2, v2, v4, vcc
+; GFX7-NEXT:    v_or_b32_e32 v4, 0x400000, v1
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v1
+; GFX7-NEXT:    v_cndmask_b32_e32 v1, v1, v4, vcc
+; GFX7-NEXT:    v_or_b32_e32 v4, 0x400000, v3
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v3
+; GFX7-NEXT:    v_cndmask_b32_e32 v3, v3, v4, vcc
 ; GFX7-NEXT:    v_mul_f32_e32 v0, 1.0, v0
 ; GFX7-NEXT:    v_mul_f32_e32 v2, 1.0, v2
 ; GFX7-NEXT:    v_mul_f32_e32 v1, 1.0, v1
@@ -13013,6 +13031,24 @@ define <3 x bfloat> @v_minimumnum_v3bf16_no_ieee(<3 x bfloat> %x, <3 x bfloat> %
 ; GFX7-LABEL: v_minimumnum_v3bf16_no_ieee:
 ; GFX7:       ; %bb.0:
 ; GFX7-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v0
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v0
+; GFX7-NEXT:    v_cndmask_b32_e32 v0, v0, v6, vcc
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v3
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v3
+; GFX7-NEXT:    v_cndmask_b32_e32 v3, v3, v6, vcc
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v1
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v1
+; GFX7-NEXT:    v_cndmask_b32_e32 v1, v1, v6, vcc
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v4
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v4
+; GFX7-NEXT:    v_cndmask_b32_e32 v4, v4, v6, vcc
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v2
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v2
+; GFX7-NEXT:    v_cndmask_b32_e32 v2, v2, v6, vcc
+; GFX7-NEXT:    v_or_b32_e32 v6, 0x400000, v5
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v5
+; GFX7-NEXT:    v_cndmask_b32_e32 v5, v5, v6, vcc
 ; GFX7-NEXT:    v_mul_f32_e32 v0, 1.0, v0
 ; GFX7-NEXT:    v_mul_f32_e32 v3, 1.0, v3
 ; GFX7-NEXT:    v_mul_f32_e32 v1, 1.0, v1
@@ -13511,6 +13547,30 @@ define <4 x bfloat> @v_minimumnum_v4bf16_no_ieee(<4 x bfloat> %x, <4 x bfloat> %
 ; GFX7-LABEL: v_minimumnum_v4bf16_no_ieee:
 ; GFX7:       ; %bb.0:
 ; GFX7-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v0
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v0
+; GFX7-NEXT:    v_cndmask_b32_e32 v0, v0, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v4
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v4
+; GFX7-NEXT:    v_cndmask_b32_e32 v4, v4, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v1
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v1
+; GFX7-NEXT:    v_cndmask_b32_e32 v1, v1, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v5
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v5
+; GFX7-NEXT:    v_cndmask_b32_e32 v5, v5, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v2
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v2
+; GFX7-NEXT:    v_cndmask_b32_e32 v2, v2, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v6
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v6
+; GFX7-NEXT:    v_cndmask_b32_e32 v6, v6, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v3
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v3
+; GFX7-NEXT:    v_cndmask_b32_e32 v3, v3, v8, vcc
+; GFX7-NEXT:    v_or_b32_e32 v8, 0x400000, v7
+; GFX7-NEXT:    v_cmp_u_f32_e32 vcc, 0, v7
+; GFX7-NEXT:    v_cndmask_b32_e32 v7, v7, v8, vcc
 ; GFX7-NEXT:    v_mul_f32_e32 v0, 1.0, v0
 ; GFX7-NEXT:    v_mul_f32_e32 v4, 1.0, v4
 ; GFX7-NEXT:    v_mul_f32_e32 v1, 1.0, v1
