@@ -53,6 +53,7 @@
 #include "SIFixVGPRCopies.h"
 #include "SIFoldOperands.h"
 #include "SIFormMemoryClauses.h"
+#include "SSASIFormMemoryClauses.h"
 #include "SILoadStoreOptimizer.h"
 #include "SILowerControlFlow.h"
 #include "SILowerSGPRSpills.h"
@@ -564,6 +565,11 @@ static cl::opt<bool> EnablePreRAOptimizations(
     cl::desc("Enable Pre-RA optimizations pass"), cl::init(true),
     cl::Hidden);
 
+static cl::opt<bool> EnableSSASIFormMemoryClauses(
+    "amdgpu-enable-ssa-form-memory-clauses",
+    cl::desc("Enable SSA form memory clause pass (before PHI elimination)"),
+    cl::init(false), cl::Hidden);
+
 static cl::opt<bool> EnablePromoteKernelArguments(
     "amdgpu-enable-promote-kernel-arguments",
     cl::desc("Enable promotion of flat kernel pointer arguments to global"),
@@ -714,6 +720,7 @@ extern "C" LLVM_ABI LLVM_EXTERNAL_VISIBILITY void LLVMInitializeAMDGPUTarget() {
   initializeSIOptimizeExecMaskingLegacyPass(*PR);
   initializeSIPreAllocateWWMRegsLegacyPass(*PR);
   initializeSIFormMemoryClausesLegacyPass(*PR);
+  initializeSSASIFormMemoryClausesLegacyPass(*PR);
   initializeSIPostRABundlerLegacyPass(*PR);
   initializeGCNCreateVOPDLegacyPass(*PR);
   initializeAMDGPUUnifyDivergentExitNodesLegacyPass(*PR);
@@ -1413,6 +1420,7 @@ AMDGPUPassConfig::AMDGPUPassConfig(TargetMachine &TM, PassManagerBase &PM)
   // Garbage collection is not supported.
   disablePass(&GCLoweringID);
   disablePass(&ShadowStackGCLoweringID);
+
 }
 
 void AMDGPUPassConfig::addEarlyCSEOrGVNPass() {
@@ -1758,8 +1766,17 @@ void GCNPassConfig::addOptimizedRegAlloc() {
 
   // This is not an essential optimization and it has a noticeable impact on
   // compilation time, so we only enable it from O2.
-  if (TM->getOptLevel() > CodeGenOptLevel::Less)
+  if (TM->getOptLevel() > CodeGenOptLevel::Less && !EnableSSASIFormMemoryClauses)
     insertPass(&MachineSchedulerID, &SIFormMemoryClausesID);
+
+  // Run the SSA form of the memory clause pass before PHI elimination.
+  // LiveIntervals is required and inserted immediately before the pass.
+  // TODO: Once PR #161054 (SSAMachineScheduler) is merged, anchor this pass
+  // after SSAMachineSchedulerID instead of LiveVariablesID.
+  if (EnableSSASIFormMemoryClauses) {
+    insertPass(&LiveVariablesID, &LiveIntervalsID);
+    insertPass(&LiveIntervalsID, &SSASIFormMemoryClausesID);
+  }
 
   TargetPassConfig::addOptimizedRegAlloc();
 }
