@@ -21153,8 +21153,9 @@ combinations of operands, refer to one of instruction set architecture manuals
 [AMD-GCN-GFX942-CDNA3]_, [AMD-GCN-GFX10-RDNA1]_, [AMD-GCN-GFX10-RDNA2]_,
 [AMD-GCN-GFX11-RDNA3]_, [AMD-GCN-GFX11-RDNA3.5]_ and [AMD-GCN-GFX12-RDNA4]_.
 
-Additionally, instruction syntax description can also be found at the ROCm
-LLVM Compiler Infrastructure website.
+Additionally, instruction syntax description can also be found at the `ROCm
+LLVM Compiler Infrastructure website
+<https://rocm.docs.amd.com/projects/llvm-project/en/latest/index.html>`_.
 
 Operands
 ~~~~~~~~
